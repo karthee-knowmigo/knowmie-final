@@ -252,7 +252,7 @@ export const NewPrompter = ({
       const sanitizedMessage = message.replace(/@\w+/g, "").trim();
       console.log("This should send back a response");
       console.log("And this is the prompt", sanitizedMessage);
-      fetch("/api/askTwin", {
+      fetch("https://helloworld-app-361352416226.us-central1.run.app/askTwin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -297,19 +297,22 @@ export const NewPrompter = ({
         });
     } else {
       if (message) {
-        fetch("/api/extract", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            // Add CORS headers if needed
-            "Access-Control-Allow-Origin": "*",
+        fetch(
+          "https://helloworld-app-361352416226.us-central1.run.app/extract",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              // Add CORS headers if needed
+              "Access-Control-Allow-Origin": "*",
+            },
+            body: JSON.stringify({
+              text: message,
+              userId: auth?.currentUser?.uid,
+            }),
           },
-          body: JSON.stringify({
-            text: message,
-            userId: auth?.currentUser?.uid,
-          }),
-        })
+        )
           .then(async (response) => {
             const responseBody = await response.json(); // Read the stream as text
             if (response.ok) {
