@@ -1,0 +1,103 @@
+"use client";
+
+import { useEffect, useCallback } from "react";
+import Script from "next/script";
+import { useUserStore } from "../store/snapStore";
+
+/* =========================
+   Types
+========================= */
+
+interface Bitmoji {
+  avatar: string;
+}
+
+interface SnapUser {
+  displayName: string;
+  bitmoji: Bitmoji;
+  externalId: string;
+}
+
+interface AppUser extends SnapUser {
+  avatarOverride: string;
+}
+
+/* =========================
+   Extend Window
+========================= */
+
+declare global {
+  interface Window {
+    snapKitInit?: () => void;
+    snap?: {
+      loginkit?: {
+        mountButton: (
+          elementId: string,
+          options: {
+            clientId: string;
+            redirectURI: string;
+            scopeList: string[];
+            handleResponseCallback: () => void;
+          },
+        ) => void;
+        fetchUserInfo: () => Promise<{
+          data: {
+            me: SnapUser;
+          };
+        }>;
+      };
+    };
+  }
+}
+
+/* =========================
+   Component
+========================= */
+
+export default function SnapLogin(): JSX.Element {
+  const login = useUserStore((state) => state.login);
+  const user = useUserStore((state) => state.user);
+
+  const initSnap = useCallback((): void => {
+    window.snapKitInit = () => {
+      if (window.snap?.loginkit) {
+        window.snap.loginkit.mountButton("my-login-button-target", {
+          clientId: "e3b576c3-4abf-48aa-88f6-6682f07471f2",
+          redirectURI: "https://knowmie-web-front.web.app/",
+          scopeList: ["user.display_name", "user.bitmoji.avatar"],
+          handleResponseCallback: () => {
+            window.snap?.loginkit?.fetchUserInfo().then((result) => {
+              const userData = result.data.me;
+
+              login(userData);
+            });
+          },
+        });
+      }
+    };
+
+    if (window.snap?.loginkit && window.snapKitInit) {
+      window.snapKitInit();
+    }
+  }, [login]);
+
+  useEffect(() => {
+    initSnap();
+  }, [initSnap]);
+
+  return (
+    <div>
+      <Script
+        src="https://sdk.snapkit.com/js/v1/login.js"
+        strategy="beforeInteractive"
+        onLoad={initSnap}
+      />
+
+      {user ? (
+        <div className="profile">
+          <h2>{user.displayName}</h2>
+        </div>
+      ) : null}
+    </div>
+  );
+}
