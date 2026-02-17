@@ -54,7 +54,7 @@ declare global {
    Component
 ========================= */
 
-export default function SnapLogin(): JSX.Element {
+export default function SnapLogin() {
   const login = useUserStore((state) => state.login);
   const user = useUserStore((state) => state.user);
 
