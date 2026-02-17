@@ -252,7 +252,7 @@ export const NewPrompter = ({
       const sanitizedMessage = message.replace(/@\w+/g, "").trim();
       console.log("This should send back a response");
       console.log("And this is the prompt", sanitizedMessage);
-      fetch("http://localhost:8080/askTwin", {
+      fetch("/api/askTwin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -297,7 +297,7 @@ export const NewPrompter = ({
         });
     } else {
       if (message) {
-        fetch("http://localhost:8080/extract", {
+        fetch("/api/extract", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
