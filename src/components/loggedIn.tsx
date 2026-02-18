@@ -62,7 +62,7 @@ export default function SnapLogin() {
     window.snapKitInit = () => {
       if (window.snap?.loginkit) {
         window.snap.loginkit.mountButton("my-login-button-target", {
-          clientId: "fea9413d-7f14-4aff-b5ae-fbec1a3824cd",
+          clientId: "e3b576c3-4abf-48aa-88f6-6682f07471f2",
           redirectURI:
             "https://knowmie-final--knowmie-web-front.us-central1.hosted.app/",
           scopeList: ["user.display_name", "user.bitmoji.avatar"],
